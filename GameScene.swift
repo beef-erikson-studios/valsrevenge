@@ -31,6 +31,12 @@ class GameScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
+        let grassMapMode = childNode(withName: "Grass Tile Map") as? SKTileMapNode
+        grassMapMode?.setupEdgeLoop()
+        
+        let dungeonMapMode = childNode(withName: "Dungeon Tile Map") as? SKTileMapNode
+        dungeonMapMode?.setupMapPhysics()
+        
         player = childNode(withName: "player") as? Player
         player?.move(.stop)
         

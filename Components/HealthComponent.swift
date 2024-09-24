@@ -10,11 +10,19 @@ import GameplayKit
 
 class HealthComponent : GKComponent {
     
+    // MARK: - Inspector Variables
+    
     @GKInspectable var currentHealth: Int = 3
     @GKInspectable var maxHealth: Int = 3
     
+    
+    // MARK: - Private Variables
+    
     private let healthFull = SKTexture(imageNamed: "health_full")
     private let healthEmpty = SKTexture(imageNamed: "health_empty")
+    
+    
+    // MARK: - Health Meter Functions
     
     // Adds health meter above the entity
     override func didAddToEntity() {
@@ -45,7 +53,6 @@ class HealthComponent : GKComponent {
             (node as? Player) != nil ?
             setupBar(at: barNum, tint: .cyan) :
             setupBar(at: barNum)
-            print("Current health: \(currentHealth) / Max health: \(maxHealth)")
         }
     }
     

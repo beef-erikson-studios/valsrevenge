@@ -15,15 +15,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Install Dependencies
+        run: brew install wget
+
       - name: Download and Install Swift
         run: |
           SWIFT_VERSION=6.0
           wget https://swift.org/builds/swift-${SWIFT_VERSION}-release/macosx/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-macosx.tar.gz
-          tar xzf swift-${SWIFT_VERSION}-RELEASE-macosx.tar.gz
+          tar -xzf swift-${SWIFT_VERSION}-RELEASE-macosx.tar.gz
           sudo mv swift-${SWIFT_VERSION}-RELEASE-macosx /usr/local/swift
-          echo 'export PATH=/usr/local/swift/usr/bin:$PATH' >> $GITHUB_ENV
+          echo '/usr/local/swift/usr/bin' >> $GITHUB_PATH
+
+      - name: Verify Swift Installation
+        run: swift --version
+
       - name: Build
         run: swift build -v
+
       - name: Run tests
         run: swift test -v
 

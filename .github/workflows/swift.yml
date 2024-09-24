@@ -15,9 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install Dependencies
-        run: brew install wget
 
       - name: Download and Install Swift
         run: |

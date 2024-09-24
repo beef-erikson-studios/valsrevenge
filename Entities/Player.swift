@@ -7,6 +7,9 @@
 
 import SpriteKit
 
+
+// MARK: - Directions
+
 enum Direction: String {
     case stop
     case left
@@ -20,16 +23,22 @@ enum Direction: String {
 }
 
 class Player: SKSpriteNode {
+    
+    // MARK: - Private Variables
+    
     private let runSpeed: Int = 100
     private let attackSpeed: Int = 300
     private let attackLength: Float = 0.25
     
     private var currentDirection = Direction.stop
     
-    /* PLAYER CONTROLS */
+    
+    // MARK: - Movement
+
     func move(_ direction: Direction) {
-        print("move player: \(direction)")
+        
         switch direction {
+        
         case .up:
             self.physicsBody?.velocity = CGVector(dx: 0, dy: runSpeed)
             // self.physicsBody?.applyImpulse(dx: 0, dy: 100)
@@ -55,18 +64,23 @@ class Player: SKSpriteNode {
         if direction != .stop { currentDirection = direction }
     }
     
+    // Stop movement
     func stop() {
         self.physicsBody?.velocity = CGVector.zero
     }
     
-    /* PLAYER ATTACK */
+    
+    // MARK: - Attacks
+    
     func attack() {
+        // Adds knife projectile at center of player
         let projectile = SKSpriteNode(imageNamed: "knife")
         projectile.position = CGPoint(x: 0, y: 0)
         addChild(projectile)
         
         var throwDirection = CGVector.zero
         
+        // Sets throw direction and rotation of knife based on player direction
         switch currentDirection {
         case .left:
             throwDirection = CGVector(dx: -attackSpeed, dy: 0)
@@ -94,6 +108,7 @@ class Player: SKSpriteNode {
             projectile.zRotation = 3 * -CGFloat.pi / 4
         }
         
+        // Run action
         let throwProjectile = SKAction.move(by: throwDirection, duration: 0.25)
         projectile.run(throwProjectile, completion: { projectile.removeFromParent() })
     }

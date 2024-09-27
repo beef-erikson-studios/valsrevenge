@@ -5,4 +5,16 @@
 //  Created by Troy Martin on 9/27/24.
 //
 
-import Foundation
+import SpriteKit
+import GameplayKit
+
+class GeneratorComponent: GKComponent {
+    
+    override func didAddToEntity() {
+        
+    }
+    
+    override class var supportsSecureCoding: Bool {
+        true
+    }
+}

@@ -26,16 +26,12 @@ class HealthComponent : GKComponent {
     
     // Adds health meter above the entity
     override func didAddToEntity() {
-        
-        // Grab the node
-        guard let node = entity?.component(ofType: GKSKNodeComponent.self)?.node
-                else { return }
-        
+
         // Place health above head and sets health to 0
         if let healthMeter = SKReferenceNode(fileNamed: "HealthMeter") {
             healthMeter.position = CGPoint(x: 0, y: 100)
-            node.addChild(healthMeter)
-            updateHealth(0, forNode: node)
+            componentNode.addChild(healthMeter)
+            updateHealth(0, forNode: healthMeter)
         }
     }
     
@@ -58,12 +54,10 @@ class HealthComponent : GKComponent {
     
     // Setup health meter
     func setupBar(at num: Int, tint: SKColor? = nil) {
-        // Grab the node
-        guard let node = entity?.component(ofType: GKSKNodeComponent.self)?.node
-                else { return }
-        
+
         // Sets health
-        if let health = node.childNode(withName: ".//health_\(num)") as? SKSpriteNode {
+        if let health = componentNode.childNode(withName: ".//health_\(num)") as? SKSpriteNode {
+            // Full health
             if currentHealth >= num {
                 health.texture = healthFull
                 // Sets tint
@@ -71,6 +65,7 @@ class HealthComponent : GKComponent {
                     health.color = tint
                     health.colorBlendFactor = 1.0
                 }
+            // Empty health
             } else {
                 health.texture = healthEmpty
                 health.colorBlendFactor = 0.0
@@ -78,13 +73,12 @@ class HealthComponent : GKComponent {
         }
     }
     
-    override func willRemoveFromEntity() {
-        
-    }
+    //override func willRemoveFromEntity() {
+    // }
     
-    override func update(deltaTime seconds: TimeInterval) {
-
-    }
+    
+    // override func update(deltaTime seconds: TimeInterval) {
+    // }
     
     // True to avoid loading issues due to using archived scene files
     override class var supportsSecureCoding: Bool {

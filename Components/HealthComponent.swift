@@ -73,10 +73,11 @@ class HealthComponent : GKComponent {
         }
     }
     
+    // Do things on removal
     //override func willRemoveFromEntity() {
     // }
     
-    
+    // Frame updates
     // override func update(deltaTime seconds: TimeInterval) {
     // }
     

@@ -21,9 +21,8 @@ class GeneratorComponent: GKComponent {
     
     // MARK: - OVERRIDES
     
-    // Spawns a monster while maxMonsters isn't hit
+    /// Spawns a monster until maxMonster is hit.
     override func didAddToEntity() {
-        
         // Waits and spawns monster
         let wait = SKAction.wait(forDuration: waitTime)
         let spawn = SKAction.run { [unowned self] in self.spawnMonsterEntity() }
@@ -41,6 +40,7 @@ class GeneratorComponent: GKComponent {
         componentNode.run(repeatAction!, withKey: "spawnMonster")
     }
     
+    // This is needed so things load properly.
     override class var supportsSecureCoding: Bool {
         true
     }
@@ -48,9 +48,8 @@ class GeneratorComponent: GKComponent {
     
     // MARK: - FUNCTIONS
     
-    // Monster Spawner
+    /// Monster spawner - spawn a monster based on monster type.
     func spawnMonsterEntity() {
-        
         // Create monster entity and add the render component with the appropriate sprite.
         let monsterEntity = MonsterEntity(monsterType: monsterType)
         let renderComponent = RenderComponent(imageNamed: "\(monsterType)_0", scale: 0.65)

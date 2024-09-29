@@ -12,17 +12,15 @@ import GameplayKit
 // MARK: - GAME OBJECT ENUMS
 
 enum GameObjectType: String {
-    
     // Monsters
     case skeleton
     case goblin
 }
 
 
-// MARK: - GAME OBJECT STRUCTURE
+// MARK: - GAME OBJECT STRUCT
 
 struct GameObject {
-    
     // Default generator and animation statics
     static let defaultGeneratorType = GameObjectType.skeleton.rawValue
     static let defaultAnimationType = GameObjectType.skeleton.rawValue
@@ -54,6 +52,11 @@ struct GameObject {
     
     // MARK: - STATIC FUNCTIONS
     
+    /// Sets the animationSettings for each GameObjectType.
+    ///
+    /// - Parameters:
+    ///   - type: The GameObjectType to set the animation settings for (i.e. "skeleton").
+    /// - Returns: Animation for the game object that was passed in or nil if not found.
     static func forAnimationType(_ type: GameObjectType?) -> Animation? {
         switch type {
         case .skeleton:

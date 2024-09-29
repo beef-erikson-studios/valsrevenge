@@ -24,9 +24,8 @@ class HealthComponent : GKComponent {
     
     // MARK: - Health Meter Functions
     
-    // Adds health meter above the entity
+    /// Adds health meter above the entity.
     override func didAddToEntity() {
-
         // Place health above head and sets health to 0
         if let healthMeter = SKReferenceNode(fileNamed: "HealthMeter") {
             healthMeter.position = CGPoint(x: 0, y: 100)
@@ -35,7 +34,7 @@ class HealthComponent : GKComponent {
         }
     }
     
-    // Updates the health meter
+    /// Updates the health meter.
     func updateHealth(_ value: Int, forNode node: SKNode?) {
         currentHealth += value
         
@@ -52,9 +51,8 @@ class HealthComponent : GKComponent {
         }
     }
     
-    // Setup health meter
+    /// Setup the health meter. Includes tint, full health, and empty health.
     func setupBar(at num: Int, tint: SKColor? = nil) {
-
         // Sets health
         if let health = componentNode.childNode(withName: ".//health_\(num)") as? SKSpriteNode {
             // Full health
@@ -72,6 +70,11 @@ class HealthComponent : GKComponent {
             }
         }
     }
+
+    // True to avoid loading issues due to using archived scene files
+    override class var supportsSecureCoding: Bool {
+        true
+    }
     
     // Do things on removal
     //override func willRemoveFromEntity() {
@@ -80,9 +83,4 @@ class HealthComponent : GKComponent {
     // Frame updates
     // override func update(deltaTime seconds: TimeInterval) {
     // }
-    
-    // True to avoid loading issues due to using archived scene files
-    override class var supportsSecureCoding: Bool {
-        true
-    }
 }

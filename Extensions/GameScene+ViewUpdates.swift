@@ -9,6 +9,7 @@ import SpriteKit
 
 extension GameScene: GameViewControllerDelegate {
     
+    /// Sets the layout and handles orientation scale size.
     func didChangeLayout() {
         let w = view?.bounds.size.width ?? 1024
         let h = view?.bounds.size.height ?? 1336

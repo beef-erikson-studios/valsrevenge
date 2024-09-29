@@ -9,8 +9,8 @@ import SpriteKit
 
 extension SKTileMapNode {
     
+    /// Sets up an edge rectangle and physics to set overall player bounds.
     func setupEdgeLoop() {
-        
         // Sets edge rectangle variables
         let mapPoint = CGPoint(x: -frame.size.width / 2,
                                y: -frame.size.height / 2)
@@ -29,8 +29,8 @@ extension SKTileMapNode {
         physicsBody?.categoryBitMask = 2 // Change to enum if this gets ridiculous
     }
     
+    /// Sets up the physcis for the rest of the tiles nodes based on their size.
     func setupMapPhysics() {
-        
         let halfWidth = CGFloat(numberOfColumns) / 2.0 * tileSize.width
         let halfHeight = CGFloat(numberOfRows) / 2.0 * tileSize.height
         

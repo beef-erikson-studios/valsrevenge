@@ -8,8 +8,10 @@
 import SpriteKit
 import GameplayKit
 
+
 extension GKComponent {
-    // Helper extension - returns node regardless of code or scene editor.
+    
+    /// Helper extension - returns node regardless of code or scene editor.
     var componentNode: SKNode {
         if let node = entity?.component(ofType: GKSKNodeComponent.self)?.node {
             return node

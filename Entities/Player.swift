@@ -35,14 +35,16 @@ class Player: SKSpriteNode {
     
     // MARK: - Movement
 
+    /// Moves the player in a specified direction.
+    ///
+    /// - Parameters:
+    ///   - direction: Move the character in a direction from the Direction enum (i.e. "left").
     func move(_ direction: Direction) {
-        
         switch direction {
-        
         case .up:
             self.physicsBody?.velocity = CGVector(dx: 0, dy: runSpeed)
-            // self.physicsBody?.applyImpulse(dx: 0, dy: 100)
-            // self.physicsBody?.applyForce(dx: 0, dy: 100)
+            // self.physicsBody?.applyImpulse(dx: 0, dy: 100)  // Impulse movement
+            // self.physicsBody?.applyForce(dx: 0, dy: 100)    // Force movement
         case .down:
             self.physicsBody?.velocity = CGVector(dx: 0, dy: -runSpeed)
         case .left:
@@ -64,7 +66,7 @@ class Player: SKSpriteNode {
         if direction != .stop { currentDirection = direction }
     }
     
-    // Stop movement
+    /// Stops player movement.
     func stop() {
         self.physicsBody?.velocity = CGVector.zero
     }
@@ -72,6 +74,7 @@ class Player: SKSpriteNode {
     
     // MARK: - Attacks
     
+    /// Player attacks with a knife in the currently-facing direction.
     func attack() {
         // Adds knife projectile at center of player
         let projectile = SKSpriteNode(imageNamed: "knife")

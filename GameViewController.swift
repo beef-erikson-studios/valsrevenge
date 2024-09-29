@@ -9,17 +9,22 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
+
+// MARK: - PROTOCOLS
+
 protocol GameViewControllerDelegate {
     func didChangeLayout()
 }
 
 class GameViewController: UIViewController {
+    
+    // MARK: - OVERRIDES
 
+    /// Override used to set up the View Controller.
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
-        // including entities and graphs.
+        // Load 'GameScene.sks' as a GKScene. Provides gameplay related content like entities / graphs.
         if let scene = GKScene(fileNamed: "GameScene") {
             
             // Get the SKScene from the loaded GKScene
@@ -44,7 +49,8 @@ class GameViewController: UIViewController {
             }
         }
     }
-    
+
+    /// Override that handles layout changes
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -56,6 +62,7 @@ class GameViewController: UIViewController {
         gameViewControllerDelegate.didChangeLayout()
     }
 
+    /// Handles orientation for phones; allows all but upside down on phones, all otherwise.
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
             return .allButUpsideDown
@@ -64,6 +71,7 @@ class GameViewController: UIViewController {
         }
     }
 
+    // Hides the status bar.
     override var prefersStatusBarHidden: Bool {
         return true
     }

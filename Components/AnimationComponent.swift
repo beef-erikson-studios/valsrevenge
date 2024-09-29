@@ -46,14 +46,18 @@ class AnimationComponent: GKComponent {
     // Inspector properties
     @GKInspectable var animationType: String = GameObject.defaultAnimationType // Skeleton
     
+    /// Runs the animation based on animationType.
     override func didAddToEntity() {
+        // Grab the animation from animationType
         guard let animation = GameObject.forAnimationType(GameObjectType(rawValue: animationType))
                 else { return }
         
+        // Set animation variables
         let textures = animation.textures
         let timePerFrame = animation.timePerFrame
         let animationAction = SKAction.animate(with: textures, timePerFrame: timePerFrame)
         
+        // Repeat forever or just once
         if animation.repeatTexturesForever == true {
             let repeatAction = SKAction.repeatForever(animationAction)
             componentNode.run(repeatAction)
@@ -62,6 +66,7 @@ class AnimationComponent: GKComponent {
         }
     }
     
+    // Requred override - may not load properly otherwise. 
     override class var supportsSecureCoding: Bool {
         true
     }

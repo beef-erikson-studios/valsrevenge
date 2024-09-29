@@ -26,26 +26,32 @@ class GameScene: SKScene {
     
     // MARK: - Overrides
     
+    /// On scene load, resets lastUpdateTime.
     override func sceneDidLoad() {
         self.lastUpdateTime = 0
     }
     
+    /// Sets up map modes, physics, and player for use.
     override func didMove(to view: SKView) {
+        // Grass tiles
         let grassMapMode = childNode(withName: "Grass Tile Map") as? SKTileMapNode
         grassMapMode?.setupEdgeLoop()
         
+        // Dungeon tiles
         let dungeonMapMode = childNode(withName: "Dungeon Tile Map") as? SKTileMapNode
         dungeonMapMode?.setupMapPhysics()
         
+        // Player
         player = childNode(withName: "player") as? Player
         player?.move(.stop)
         
         setupCamera()
     }
     
+    /// Called every frame before rendering. Updates lastUpdateTime and all entities.
+    /// - Parameters:
+    ///  - currentTime: Used for updating the current time for spawning purposes.
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-        
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
@@ -65,6 +71,7 @@ class GameScene: SKScene {
 
     // MARK: - Functions
     
+    /// Updates the control widgets to stay in the bottom right / bottom left.
     func updateControllerLocation() {
         // Set controller to bottom left
         let controller = childNode(withName: "//controller")
@@ -77,6 +84,7 @@ class GameScene: SKScene {
                                          y: (viewBottom + margin + insets.bottom))
     }
     
+    /// Sets the camera up and contrains it to the player.
     func setupCamera() {
         guard let player = player else { return }
         let distance = SKRange(constantValue: 0)
@@ -87,18 +95,23 @@ class GameScene: SKScene {
     
     // MARK: - Touch Controls
     
+    /// On touch down - handles controls (movement / shooting).
     func touchDown(atPoint pos : CGPoint) {
         let nodeAtPoint = atPoint(pos)
         if let touchedNode = nodeAtPoint as? SKSpriteNode {
+            
+            // Movement
             if touchedNode.name?.starts(with: "controller_") == true {
                 let direction = touchedNode.name?.replacingOccurrences(of: "controller_", with: "")
                 player?.move(Direction(rawValue: direction ?? "stop")!)
+            // Attack
             } else if touchedNode.name == "button_attack" {
                 player?.attack()
             }
         }
     }
     
+    /// On touch moved, move the player if on controller, otherwise stop player.
     func touchMoved(toPoint pos : CGPoint) {
         let nodeAtPoint = atPoint(pos)
         if let touchedNode = nodeAtPoint as? SKSpriteNode {
@@ -109,6 +122,7 @@ class GameScene: SKScene {
         }
     }
     
+    /// On touch up, stop the player from moving.
     func touchUp(atPoint pos : CGPoint) {
         let nodeAtPoint = atPoint(pos)
         if let touchedNode = nodeAtPoint as? SKSpriteNode {
@@ -118,6 +132,7 @@ class GameScene: SKScene {
         }
     }
     
+    /// On touch begin, pulse label with a fadeInOut.
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let label = self.label {
             label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
@@ -126,20 +141,23 @@ class GameScene: SKScene {
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
     
+    /// Move the touch.
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
     }
     
+    /// End the touch.
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
+    /// Cancel the touch (end it).
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
+    /// Updates controller location for switching orientations.
     override func didFinishUpdate() {
-        // Updates controller location for switching orientations
         updateControllerLocation()
     }
 }

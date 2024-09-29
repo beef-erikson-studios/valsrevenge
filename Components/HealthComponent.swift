@@ -55,6 +55,7 @@ class HealthComponent : GKComponent {
     func setupBar(at num: Int, tint: SKColor? = nil) {
         // Sets health
         guard let health = componentNode.childNode(withName: ".//health_\(num)") as? SKSpriteNode else { return }
+        
         // Full health
         if currentHealth >= num {
             health.texture = healthFull

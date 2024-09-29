@@ -45,9 +45,9 @@ class HealthComponent : GKComponent {
         
         // Sets health
         for barNum in 1...maxHealth {
-            (node as? Player) != nil ?
-            setupBar(at: barNum, tint: .cyan) :
-            setupBar(at: barNum)
+            (componentNode as? Player) != nil ?
+                setupBar(at: barNum, tint: .cyan) :
+                setupBar(at: barNum)
         }
     }
     
@@ -61,6 +61,7 @@ class HealthComponent : GKComponent {
             health.texture = healthFull
             // Sets tint
             if let tint = tint {
+
                 health.color = tint
                 health.colorBlendFactor = 1.0
             }

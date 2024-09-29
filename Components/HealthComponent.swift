@@ -54,20 +54,19 @@ class HealthComponent : GKComponent {
     /// Setup the health meter. Includes tint, full health, and empty health.
     func setupBar(at num: Int, tint: SKColor? = nil) {
         // Sets health
-        if let health = componentNode.childNode(withName: ".//health_\(num)") as? SKSpriteNode {
-            // Full health
-            if currentHealth >= num {
-                health.texture = healthFull
-                // Sets tint
-                if let tint = tint {
-                    health.color = tint
-                    health.colorBlendFactor = 1.0
-                }
-            // Empty health
-            } else {
-                health.texture = healthEmpty
-                health.colorBlendFactor = 0.0
+        guard let health = componentNode.childNode(withName: ".//health_\(num)") as? SKSpriteNode else { return }
+        // Full health
+        if currentHealth >= num {
+            health.texture = healthFull
+            // Sets tint
+            if let tint = tint {
+                health.color = tint
+                health.colorBlendFactor = 1.0
             }
+        // Empty health
+        } else {
+            health.texture = healthEmpty
+            health.colorBlendFactor = 0.0
         }
     }
 

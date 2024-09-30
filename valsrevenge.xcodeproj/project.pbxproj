@@ -58,7 +58,6 @@
 		C4CABFA92C84CBE200D32717 = {
 			isa = PBXGroup;
 			children = (
-				C45A2E242CAB534A00402A76 /* States */,
 				C4CABFBD2C84CBE200D32717 /* GameViewController.swift */,
 				C4CABFC22C84CBE300D32717 /* Assets.xcassets */,
 				C4979E452CA2FE5D00616E2B /* Music */,
@@ -69,6 +68,7 @@
 				C43FC2072CA32C3100696D20 /* Entities */,
 				C4979E642CA3019C00616E2B /* Components */,
 				C4979E442CA2FCDA00616E2B /* Tile Sets */,
+				C45A2E242CAB534A00402A76 /* States */,
 				C4CABFB52C84CBE200D32717 /* AppDelegate.swift */,
 				C4CABFBF2C84CBE200D32717 /* Main.storyboard */,
 				C4CABFC42C84CBE300D32717 /* LaunchScreen.storyboard */,

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C45A2E252CAB534A00402A76 /* PlayerStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45A2E232CAB534A00402A76 /* PlayerStates.swift */; };
 		C4CABFB62C84CBE200D32717 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CABFB52C84CBE200D32717 /* AppDelegate.swift */; };
 		C4CABFBE2C84CBE200D32717 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CABFBD2C84CBE200D32717 /* GameViewController.swift */; };
 		C4CABFC12C84CBE200D32717 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = C4CABFC02C84CBE200D32717 /* Base */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C45A2E232CAB534A00402A76 /* PlayerStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStates.swift; sourceTree = "<group>"; };
 		C4CABFB22C84CBE200D32717 /* valsrevenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = valsrevenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4CABFB52C84CBE200D32717 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C4CABFBD2C84CBE200D32717 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -45,9 +47,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C45A2E242CAB534A00402A76 /* States */ = {
+			isa = PBXGroup;
+			children = (
+				C45A2E232CAB534A00402A76 /* PlayerStates.swift */,
+			);
+			path = States;
+			sourceTree = "<group>";
+		};
 		C4CABFA92C84CBE200D32717 = {
 			isa = PBXGroup;
 			children = (
+				C45A2E242CAB534A00402A76 /* States */,
 				C4CABFBD2C84CBE200D32717 /* GameViewController.swift */,
 				C4CABFC22C84CBE300D32717 /* Assets.xcassets */,
 				C4979E452CA2FE5D00616E2B /* Music */,
@@ -155,6 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4CABFBE2C84CBE200D32717 /* GameViewController.swift in Sources */,
+				C45A2E252CAB534A00402A76 /* PlayerStates.swift in Sources */,
 				C4CABFB62C84CBE200D32717 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,6 +6,7 @@
 //
 
 import SpriteKit
+import GameplayKit
 
 
 // MARK: - Directions
@@ -24,7 +25,7 @@ enum Direction: String {
 
 class Player: SKSpriteNode {
     
-    // MARK: - Private Variables
+    // MARK: - VARIABLES
     
     private let runSpeed: Int = 100
     private let attackSpeed: Int = 300
@@ -32,8 +33,22 @@ class Player: SKSpriteNode {
     
     private var currentDirection = Direction.stop
     
+    var stateMachine = GKStateMachine(states: [PlayerHasKeyState(), PlayerHasNoKeyState()])
     
-    // MARK: - Movement
+    // MARK: - OVERRIDES
+    
+    /// Initialize player with PlayerHasNoKeyState.
+    ///
+    /// - Parameters:
+    ///   - coder: Passed in automatically on init.
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        
+        stateMachine.enter(PlayerHasNoKeyState.self)
+    }
+    
+    
+    // MARK: - MOVEMENT
 
     /// Moves the player in a specified direction.
     ///
@@ -72,7 +87,7 @@ class Player: SKSpriteNode {
     }
     
     
-    // MARK: - Attacks
+    // MARK: - ATTACKS
     
     /// Player attacks with a knife in the currently-facing direction.
     func attack() {

@@ -15,22 +15,33 @@ enum GameObjectType: String {
     // Monsters
     case skeleton
     case goblin
+    case key
+    case food
+    case treasure
 }
 
-
-// MARK: - GAME OBJECT STRUCT
-
 struct GameObject {
+    
+    // MARK: - DEFAULT PROPERTIES
+    
     // Default generator and animation statics
     static let defaultGeneratorType = GameObjectType.skeleton.rawValue
     static let defaultAnimationType = GameObjectType.skeleton.rawValue
     
+    // Sets collectible settings default state.
+    static let defaultCollectibleType = GameObjectType.key.rawValue
     
-    // MARK: - MONSTER CREATION
+    
+    // MARK: - MONSTERS
     
     // Create monster struct instances
     static let skeleton = Skeleton()
     static let goblin = Goblin()
+    
+    // Create collecible struct instances
+    static let key = Key()
+    static let food = Food()
+    static let treasure = Treasure()
     
     // Goblin animation settings
     struct Goblin {
@@ -50,7 +61,33 @@ struct GameObject {
     }
     
     
-    // MARK: - STATIC FUNCTIONS
+    // MARK: - COLLECTIBLES
+    
+    // Key collectible settings
+    struct Key {
+        let collectibleSettings = Collectible(
+            type: .key,
+            collectSoundFile: "key",
+            destroySoundFile: "destroyed")
+    }
+    
+    struct Food {
+        let collectibleSettings = Collectible(
+            type: .food,
+            collectSoundFile: "food",
+            destroySoundFile: "destroyed",
+            canDestroy: true)
+    }
+    
+    struct Treasure {
+        let collectibleSettings = Collectible(
+            type: .treasure,
+            collectSoundFile: "treasure",
+            destroySoundFile: "destroyed")
+    }
+    
+    
+    // MARK: - ANIMATIONS
     
     /// Sets the animationSettings for each GameObjectType.
     ///
@@ -63,6 +100,27 @@ struct GameObject {
             return GameObject.skeleton.animationSettings
         case .goblin:
             return GameObject.goblin.animationSettings
+        default:
+            return nil
+        }
+    }
+    
+    
+    // MARK: - COLLECTIBLES
+    
+    /// Returns collectible settings for each collectible.
+    ///
+    /// - Parameters:
+    ///   - type: GameObjectType to get the settings from (i.e. "key").
+    /// - Returns: A collectible's settings.
+    static func forCollectibleType(_ type: GameObjectType?) -> Collectible? {
+        switch type {
+        case .key:
+            return GameObject.key.collectibleSettings
+        case .food:
+            return GameObject.food.collectibleSettings
+        case .treasure:
+            return GameObject.treasure.collectibleSettings
         default:
             return nil
         }

@@ -9,7 +9,7 @@ import SpriteKit
 import GameplayKit
 
 
-// MARK: - PhysicsComponent
+// MARK: - PHYSIC CATEGORIES
 
 // Entities that will be affected by physics.
 enum PhysicsCategory: String {
@@ -23,7 +23,7 @@ enum PhysicsCategory: String {
 }
 
 
-// MARK: - PhysicsShape
+// MARK: - PHYSIC SHAPE ENUM
 
 // Shape of the phsyics box.
 enum PhysicsShape: String {
@@ -32,7 +32,7 @@ enum PhysicsShape: String {
 }
 
 
-// MARK: - PhysicsBody
+// MARK: - PHYSICS BODY STRUCT
 
 // Use of OptionSet and Hashable for better maintainance and clarity. Details the various entities.
 struct PhysicsBody: OptionSet, Hashable {
@@ -105,6 +105,9 @@ struct PhysicsBody: OptionSet, Hashable {
         return bitmask?.rawValue ?? 0
     }
     
+    
+    // MARK: - PHYSICS STRUCT FUNCTIONS
+    
     /// Fetches and returns the correct physics body based on category.
     ///
     /// - Parameters:
@@ -131,5 +134,41 @@ struct PhysicsBody: OptionSet, Hashable {
         }
         
         return nil
+    }
+}
+
+
+// MARK: - PHYSICS COMPONENT
+
+class PhysicsComponent: GKComponent {
+    @GKInspectable var bodyCategory: String = PhysicsCategory.wall.rawValue
+    @GKInspectable var bodyShape: String = PhysicsShape.circle.rawValue
+    
+    /// Sets up the physicsBody component node based on the entity's category and sprite size.
+    override func didAddToEntity() {
+        guard let bodyCategory = PhysicsBody.forType(PhysicsCategory(rawValue: bodyCategory)),
+              let sprite = componentNode as? SKSpriteNode else { return }
+        
+        let size: CGSize = sprite.size
+        
+        // Sets physics body based on entity's shape
+        if bodyShape == PhysicsShape.rect.rawValue {
+            componentNode.physicsBody = SKPhysicsBody(rectangleOf: size)
+        } else if bodyShape == PhysicsShape.circle.rawValue {
+            componentNode.physicsBody = SKPhysicsBody(circleOfRadius: size.height / 2)
+        }
+        
+        // Component configurables
+        componentNode.physicsBody?.categoryBitMask = bodyCategory.categoryBitmask
+        componentNode.physicsBody?.collisionBitMask = bodyCategory.collisionBitmask
+        componentNode.physicsBody?.contactTestBitMask = bodyCategory.contactTestBitmask
+        
+        componentNode.physicsBody?.affectedByGravity = false
+        componentNode.physicsBody?.allowsRotation = false
+    }
+    
+    // Needed so everthing loads properly.
+    override class var supportsSecureCoding: Bool {
+        true
     }
 }

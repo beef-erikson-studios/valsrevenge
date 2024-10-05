@@ -19,7 +19,6 @@ extension GameScene: SKPhysicsContactDelegate {
         
         switch collision {
         
-            
         // MARK: - Player | Collectible
             
         case PhysicsBody.player.categoryBitmask | PhysicsBody.collectible.categoryBitmask:
@@ -29,8 +28,10 @@ extension GameScene: SKPhysicsContactDelegate {
             let collectibleNode = contact.bodyA.categoryBitMask == PhysicsBody.collectible.categoryBitmask ?
                 contact.bodyA.node : contact.bodyB.node
             
-            // TODO: ADD CODE TO HANDLE PLATER COLLECTION
-            
+            // Collect item
+            if let player = playerNode as? Player, let collectible = collectibleNode {
+                player.collectItem(collectible)
+            }
         
         // MARK: - Player | Door
             
@@ -41,8 +42,11 @@ extension GameScene: SKPhysicsContactDelegate {
             let doorNode = contact.bodyA.categoryBitMask == PhysicsBody.door.categoryBitmask ?
                 contact.bodyA.node : contact.bodyB.node
             
-            // TODO: ADD CODE TO HANDLE PLAYER OPENING DOOR
-
+            // Removes door and subtracts from key count
+            if let player = playerNode as? Player, let door = doorNode {
+                player.useKeyToOpenDoor(door)
+            }
+        
         default:
             break
         }

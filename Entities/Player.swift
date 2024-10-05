@@ -27,13 +27,32 @@ class Player: SKSpriteNode {
     
     // MARK: - VARIABLES
     
-    private let runSpeed: Int = 100
-    private let attackSpeed: Int = 300
-    private let attackLength: Float = 0.25
+    var runSpeed: Int = 100
+    var attackSpeed: Int = 300
+    var attackLength: Float = 0.25
     
     private var currentDirection = Direction.stop
     
     var stateMachine = GKStateMachine(states: [PlayerHasKeyState(), PlayerHasNoKeyState()])
+    
+    // Keys
+    private var keys: Int = 0 {
+        didSet {
+            print("Keys: \(keys)")
+            if keys < 1 {
+                stateMachine.enter(PlayerHasNoKeyState.self)
+            } else {
+                stateMachine.enter(PlayerHasKeyState.self)
+            }
+        }
+    }
+    
+    // Treasure
+    private var treasure: Int = 0 {
+        didSet {
+            print("Treasure: \(treasure)")
+        }
+    }
     
     // MARK: - OVERRIDES
     
@@ -45,6 +64,64 @@ class Player: SKSpriteNode {
         super.init(coder: coder)
         
         stateMachine.enter(PlayerHasNoKeyState.self)
+    }
+    
+    
+    // MARK: COLLECTIONS
+    
+    /// Handles what to do once the item has been collected.
+    ///
+    /// - Parameters:
+    ///   - collectibleNode: The CollectibleComponent node.
+    func collectItem(_ collectibleNode: SKNode) {
+        guard let collectible = collectibleNode.entity?.component(ofType: CollectibleComponent.self)
+                else { return }
+        
+        switch GameObjectType(rawValue: collectible.collectibleType) {
+        
+        // Add items here
+            // TODO: REMOVE ALL PRINTS AFTER TESTING
+        case .key:
+            print("collected key")
+            keys += collectible.value
+        case .food:
+            print("collected foodge")
+            if let healthComponent = entity?.component(ofType: HealthComponent.self) {
+                healthComponent.updateHealth(collectible.value, forNode: self)
+            }
+        case .treasure:
+            print("bling bling motha fucka!")
+            treasure += collectible.value
+        
+        default:
+            break
+        }
+    }
+    
+    /// Opens a door if the player has a key.
+    ///
+    /// - Parameters:
+    ///   - doorNode: Node of the door to open.
+    func useKeyToOpenDoor(_ doorNode: SKNode) {
+        // TODO: - REMOVE PRINT AFTER TESTED TO WORK
+        print("use key to open door")
+        
+        switch stateMachine.currentState {
+        
+        // Subtracts a key, remove door, and plays door sound
+        case is PlayerHasKeyState:
+            keys -= 1
+            
+            doorNode.removeFromParent()
+            run(SKAction.playSoundFileNamed("door_open", waitForCompletion: true))
+            
+        // Key isn't present
+        case is PlayerHasNoKeyState:
+            // TODO: PUT THIS AS A MESSAGE IN THE GAME
+            print("You cannot do this.")
+        default:
+            break
+        }
     }
     
     

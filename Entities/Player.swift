@@ -27,9 +27,9 @@ class Player: SKSpriteNode {
     
     // MARK: - VARIABLES
     
-    var runSpeed: Int = 100
-    var attackSpeed: Int = 300
-    var attackLength: Float = 0.25
+    private var runSpeed: Int = 100
+    private var attackSpeed: Int = 300
+    private var attackLength: Float = 0.25
     
     private var currentDirection = Direction.stop
     

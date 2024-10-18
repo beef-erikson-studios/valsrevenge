@@ -46,6 +46,9 @@ class GameScene: SKScene {
         player?.move(.stop)
         
         setupCamera()
+        
+        // Game scene responsible for handling physics.
+        physicsWorld.contactDelegate = self
     }
     
     /// Called every frame before rendering. Updates lastUpdateTime and all entities.

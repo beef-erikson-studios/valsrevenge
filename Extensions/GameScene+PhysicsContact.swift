@@ -21,11 +21,11 @@ extension GameScene: SKPhysicsContactDelegate {
         
         // MARK: - Player | Collectible
             
-        case PhysicsBody.player.categoryBitmask | PhysicsBody.collectible.categoryBitmask:
-            let playerNode = contact.bodyA.categoryBitMask == PhysicsBody.player.categoryBitmask ?
+        case PhysicsBody.player.categoryBitMask | PhysicsBody.collectible.categoryBitMask:
+            let playerNode = contact.bodyA.categoryBitMask == PhysicsBody.player.categoryBitMask ?
                 contact.bodyA.node : contact.bodyB.node
             
-            let collectibleNode = contact.bodyA.categoryBitMask == PhysicsBody.collectible.categoryBitmask ?
+            let collectibleNode = contact.bodyA.categoryBitMask == PhysicsBody.collectible.categoryBitMask ?
                 contact.bodyA.node : contact.bodyB.node
             
             // Collect item
@@ -35,11 +35,11 @@ extension GameScene: SKPhysicsContactDelegate {
         
         // MARK: - Player | Door
             
-        case PhysicsBody.player.categoryBitmask | PhysicsBody.door.categoryBitmask:
-            let playerNode = contact.bodyA.categoryBitMask == PhysicsBody.player.categoryBitmask ?
+        case PhysicsBody.player.categoryBitMask | PhysicsBody.door.categoryBitMask:
+            let playerNode = contact.bodyA.categoryBitMask == PhysicsBody.player.categoryBitMask ?
                 contact.bodyA.node : contact.bodyB.node
             
-            let doorNode = contact.bodyA.categoryBitMask == PhysicsBody.door.categoryBitmask ?
+            let doorNode = contact.bodyA.categoryBitMask == PhysicsBody.door.categoryBitMask ?
                 contact.bodyA.node : contact.bodyB.node
             
             // Removes door and subtracts from key count

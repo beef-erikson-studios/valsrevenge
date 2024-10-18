@@ -8,9 +8,6 @@
 import SpriteKit
 import GameplayKit
 
-
-// MARK: - Directions
-
 enum Direction: String {
     case stop
     case left
@@ -24,18 +21,11 @@ enum Direction: String {
 }
 
 class Player: SKSpriteNode {
-    
-    // MARK: - VARIABLES
-    
-    private var runSpeed: Int = 100
-    private var attackSpeed: Int = 300
-    private var attackLength: Float = 0.25
-    
+  
+    var stateMachine = GKStateMachine(states: [PlayerHasKeyState(),
+                                               PlayerHasNoKeyState()])
     private var currentDirection = Direction.stop
-    
-    var stateMachine = GKStateMachine(states: [PlayerHasKeyState(), PlayerHasNoKeyState()])
-    
-    // Keys
+  
     private var keys: Int = 0 {
         didSet {
             print("Keys: \(keys)")
@@ -46,165 +36,155 @@ class Player: SKSpriteNode {
             }
         }
     }
-    
-    // Treasure
+  
     private var treasure: Int = 0 {
         didSet {
             print("Treasure: \(treasure)")
         }
     }
-    
-    // MARK: - OVERRIDES
-    
-    /// Initialize player with PlayerHasNoKeyState.
-    ///
-    /// - Parameters:
-    ///   - coder: Passed in automatically on init.
+  
+    /// Override this method to allow for a class to work in the Scene Editor.
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
+    
         stateMachine.enter(PlayerHasNoKeyState.self)
     }
     
-    
-    // MARK: COLLECTIONS
-    
-    /// Handles what to do once the item has been collected.
+    /// Handles the collection of items and adding to the appropriate values.
     ///
     /// - Parameters:
-    ///   - collectibleNode: The CollectibleComponent node.
+    ///   - collectibleNode: SKNode of the collectible to collect,
     func collectItem(_ collectibleNode: SKNode) {
         guard let collectible = collectibleNode.entity?.component(ofType: CollectibleComponent.self)
-                else { return }
-        
+        else { return }
+    
+        collectible.collectedItem()
+    
         switch GameObjectType(rawValue: collectible.collectibleType) {
-        
-        // Add items here
-            // TODO: REMOVE ALL PRINTS AFTER TESTING
         case .key:
             print("collected key")
             keys += collectible.value
+      
         case .food:
-            print("collected foodge")
+            print("collected food")
             if let healthComponent = entity?.component(ofType: HealthComponent.self) {
                 healthComponent.updateHealth(collectible.value, forNode: self)
             }
+      
         case .treasure:
-            print("bling bling motha fucka!")
+            print("collected treasure")
             treasure += collectible.value
-        
+      
         default:
             break
         }
     }
-    
-    /// Opens a door if the player has a key.
+  
+    /// Subtracts key and opens door, playing the sound as well.
     ///
     /// - Parameters:
-    ///   - doorNode: Node of the door to open.
+    ///   - doorNode: SKNode of the door to open.
     func useKeyToOpenDoor(_ doorNode: SKNode) {
-        // TODO: - REMOVE PRINT AFTER TESTED TO WORK
-        print("use key to open door")
-        
+    
         switch stateMachine.currentState {
-        
-        // Subtracts a key, remove door, and plays door sound
         case is PlayerHasKeyState:
             keys -= 1
-            
+      
             doorNode.removeFromParent()
-            run(SKAction.playSoundFileNamed("door_open", waitForCompletion: true))
-            
-        // Key isn't present
-        case is PlayerHasNoKeyState:
-            // TODO: PUT THIS AS A MESSAGE IN THE GAME
-            print("You cannot do this.")
+            run(SKAction.playSoundFileNamed("door_open",
+                                      waitForCompletion: true))
         default:
             break
         }
     }
-    
-    
-    // MARK: - MOVEMENT
-
-    /// Moves the player in a specified direction.
-    ///
-    /// - Parameters:
-    ///   - direction: Move the character in a direction from the Direction enum (i.e. "left").
+  
+    /// Moves the player in the specified direction.
     func move(_ direction: Direction) {
+        
+        // Directions of movement
         switch direction {
         case .up:
-            self.physicsBody?.velocity = CGVector(dx: 0, dy: runSpeed)
-            // self.physicsBody?.applyImpulse(dx: 0, dy: 100)  // Impulse movement
-            // self.physicsBody?.applyForce(dx: 0, dy: 100)    // Force movement
+            self.physicsBody?.velocity = CGVector(dx: 0, dy: 100)
+            //self.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 100))
+            //self.physicsBody?.applyForce(CGVector(dx: 0, dy: 100))
         case .down:
-            self.physicsBody?.velocity = CGVector(dx: 0, dy: -runSpeed)
+            self.physicsBody?.velocity = CGVector(dx: 0, dy: -100)
         case .left:
-            self.physicsBody?.velocity = CGVector(dx: -runSpeed, dy: 0)
-        case.right:
-            self.physicsBody?.velocity = CGVector(dx: runSpeed, dy: 0)
+            self.physicsBody?.velocity = CGVector(dx: -100, dy: 0)
+        case .right:
+            self.physicsBody?.velocity = CGVector(dx: 100, dy: 0)
         case .topLeft:
-            self.physicsBody?.velocity = CGVector(dx: -runSpeed, dy: runSpeed)
+            self.physicsBody?.velocity = CGVector(dx: -100, dy: 100)
         case .topRight:
-            self.physicsBody?.velocity = CGVector(dx: runSpeed, dy: runSpeed)
+            self.physicsBody?.velocity = CGVector(dx: 100, dy: 100)
         case .bottomLeft:
-            self.physicsBody?.velocity = CGVector(dx: -runSpeed, dy: -runSpeed)
+            self.physicsBody?.velocity = CGVector(dx: -100, dy: -100)
         case .bottomRight:
-            self.physicsBody?.velocity = CGVector(dx: runSpeed, dy: -runSpeed)
-        case.stop:
+            self.physicsBody?.velocity = CGVector(dx: 100, dy: -100)
+        case .stop:
             stop()
         }
-        
-        if direction != .stop { currentDirection = direction }
-    }
     
-    /// Stops player movement.
+        if direction != .stop {
+            currentDirection = direction
+        }
+    }
+  
+    /// Stops the player from moving.
     func stop() {
-        self.physicsBody?.velocity = CGVector.zero
+        self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
     }
-    
-    
-    // MARK: - ATTACKS
-    
-    /// Player attacks with a knife in the currently-facing direction.
+  
+    /// Player attacks in the direction they are facing.
     func attack() {
-        // Adds knife projectile at center of player
         let projectile = SKSpriteNode(imageNamed: "knife")
-        projectile.position = CGPoint(x: 0, y: 0)
+        projectile.position = CGPoint(x: 0.0, y: 0.0)
         addChild(projectile)
-        
-        var throwDirection = CGVector.zero
-        
-        // Sets throw direction and rotation of knife based on player direction
+    
+        // Set up physics for projectile
+        let physicsBody = SKPhysicsBody(rectangleOf: projectile.size)
+    
+        physicsBody.affectedByGravity = false
+        physicsBody.allowsRotation = true
+        physicsBody.isDynamic = true
+    
+        physicsBody.categoryBitMask = PhysicsBody.projectile.categoryBitMask
+        physicsBody.contactTestBitMask = PhysicsBody.projectile.contactTestBitMask
+        physicsBody.collisionBitMask = PhysicsBody.projectile.collisionBitMask
+    
+        projectile.physicsBody = physicsBody
+    
+        var throwDirection = CGVector(dx: 0, dy: 0)
+    
         switch currentDirection {
-        case .left:
-            throwDirection = CGVector(dx: -attackSpeed, dy: 0)
-            projectile.zRotation = CGFloat.pi / 2
-        case .right, .stop:
-            throwDirection = CGVector(dx: attackSpeed, dy: 0)
-            projectile.zRotation = -CGFloat.pi / 2
         case .up:
-            throwDirection = CGVector(dx: 0, dy: attackSpeed)
+            throwDirection = CGVector(dx: 0, dy: 300)
             projectile.zRotation = 0
         case .down:
-            throwDirection = CGVector(dx: 0, dy: -attackSpeed)
+            throwDirection = CGVector(dx: 0, dy: -300)
             projectile.zRotation = -CGFloat.pi
+        case .left:
+            throwDirection = CGVector(dx: -300, dy: 0)
+            projectile.zRotation = CGFloat.pi/2
+        case .right, .stop: // default pre-movement (throw right)
+            throwDirection = CGVector(dx: 300, dy: 0)
+            projectile.zRotation = -CGFloat.pi/2
         case .topLeft:
-            throwDirection = CGVector(dx: -attackSpeed, dy: attackSpeed)
-            projectile.zRotation = CGFloat.pi / 4
+            throwDirection = CGVector(dx: -300, dy: 300)
+            projectile.zRotation = CGFloat.pi/4
         case .topRight:
-            throwDirection = CGVector(dx: attackSpeed, dy: attackSpeed)
-            projectile.zRotation = -CGFloat.pi / 4
+            throwDirection = CGVector(dx: 300, dy: 300)
+            projectile.zRotation = -CGFloat.pi/4
         case .bottomLeft:
-            throwDirection = CGVector(dx: -attackSpeed, dy: -attackSpeed)
-            projectile.zRotation = 3 * CGFloat.pi / 4
+            throwDirection = CGVector(dx: -300, dy: -300)
+            projectile.zRotation = 3 * CGFloat.pi/4
         case .bottomRight:
-            throwDirection = CGVector(dx: attackSpeed, dy: -attackSpeed)
-            projectile.zRotation = 3 * -CGFloat.pi / 4
+            throwDirection = CGVector(dx: 300, dy: -300)
+            projectile.zRotation = 3 * -CGFloat.pi/4
         }
-        
-        // Run action
+    
         let throwProjectile = SKAction.move(by: throwDirection, duration: 0.25)
-        projectile.run(throwProjectile, completion: { projectile.removeFromParent() })
-    }
+        projectile.run(throwProjectile,
+                   completion: {projectile.removeFromParent()})
+  }
 }

@@ -26,7 +26,9 @@ extension SKTileMapNode {
         physicsBody?.allowsRotation = false
         physicsBody?.isDynamic = false
         
-        physicsBody?.categoryBitMask = 2 // Change to enum if this gets ridiculous
+        physicsBody?.categoryBitMask = PhysicsBody.wall.categoryBitMask
+        physicsBody?.collisionBitMask = PhysicsBody.wall.collisionBitMask
+        physicsBody?.contactTestBitMask = PhysicsBody.wall.contactTestBitMask
     }
     
     /// Sets up the physcis for the rest of the tiles nodes based on their size.
@@ -63,6 +65,11 @@ extension SKTileMapNode {
                         tileNode.physicsBody?.affectedByGravity = false
                         tileNode.physicsBody?.allowsRotation = false
                         tileNode.physicsBody?.isDynamic = false
+                        
+                        // Collision properties
+                        tileNode.physicsBody?.categoryBitMask = PhysicsBody.wall.categoryBitMask
+                        tileNode.physicsBody?.collisionBitMask = PhysicsBody.wall.collisionBitMask
+                        tileNode.physicsBody?.contactTestBitMask = PhysicsBody.wall.contactTestBitMask
                         
                         addChild(tileNode)
                     }

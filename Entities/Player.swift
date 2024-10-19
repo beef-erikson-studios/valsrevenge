@@ -24,6 +24,8 @@ class Player: SKSpriteNode {
   
     var stateMachine = GKStateMachine(states: [PlayerHasKeyState(),
                                                PlayerHasNoKeyState()])
+    var agent = GKAgent2D()
+    
     private var currentDirection = Direction.stop
   
     private var keys: Int = 0 {
@@ -43,11 +45,12 @@ class Player: SKSpriteNode {
         }
     }
   
-    /// Override this method to allow for a class to work in the Scene Editor.
+    /// Sets initial key state and agent delegate.
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     
         stateMachine.enter(PlayerHasNoKeyState.self)
+        agent.delegate = self
     }
     
     /// Handles the collection of items and adding to the appropriate values.

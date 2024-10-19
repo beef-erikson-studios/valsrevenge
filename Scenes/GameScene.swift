@@ -47,10 +47,7 @@ class GameScene: SKScene {
         let dungeonMapMode = childNode(withName: "Dungeon Tile Map") as? SKTileMapNode
         dungeonMapMode?.setupMapPhysics()
         
-        // Player
-        player = childNode(withName: "player") as? Player
-        player?.move(.stop)
-        
+        setupPlayer()
         setupCamera()
         
         // Game scene responsible for handling physics.
@@ -102,6 +99,16 @@ class GameScene: SKScene {
         let distance = SKRange(constantValue: 0)
         let playerConstraint = SKConstraint.distance(distance, to: player)
         camera?.constraints = [playerConstraint]
+    }
+    
+    /// Sets up the initial move state and adds player agent.
+    func setupPlayer() {
+        player = childNode(withName: "player") as? Player
+    
+        if let player = player {
+            player.move(.stop)
+            agentComponentSystem.addComponent(player.agent)
+        }
     }
     
     

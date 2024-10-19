@@ -50,6 +50,7 @@ class GeneratorComponent: GKComponent {
         }
     }
     
+    
     // MARK: - FUNCTIONS
     
     /// Starts spawning monsters until maxMonsters is hit.
@@ -109,6 +110,11 @@ class GeneratorComponent: GKComponent {
             let physicsComponent = PhysicsComponent()
             physicsComponent.bodyCategory = PhysicsCategory.monster.rawValue
             componentNode.entity?.addComponent(physicsComponent)
+            
+            // Add monster entity to scene entities array so they use update(_:)
+            if let scene = componentNode.scene as? GameScene {
+                scene.entities.append(monsterEntity)
+            }
         }
     }
 }

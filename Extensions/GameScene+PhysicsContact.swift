@@ -18,7 +18,24 @@ extension GameScene: SKPhysicsContactDelegate {
         | contact.bodyB.categoryBitMask
         
         switch collision {
-        
+            
+        // MARK: - Projectile | Collectible
+            
+        case PhysicsBody.projectile.categoryBitMask | PhysicsBody.collectible.categoryBitMask:
+            let projectileNode = contact.bodyA.categoryBitMask == PhysicsBody.projectile.categoryBitMask
+                ? contact.bodyA.node : contact.bodyB.node
+            
+            let collectibleNode = contact.bodyA.categoryBitMask == PhysicsBody.collectible.categoryBitMask
+                ? contact.bodyA.node : contact.bodyB.node
+            
+            if let collectibleComponent = collectibleNode?.entity?.component(ofType: CollectibleComponent.self)
+            {
+                collectibleComponent.destroyedItem()
+            }
+            
+            projectileNode?.removeFromParent()
+            
+            
         // MARK: - Player | Collectible
             
         case PhysicsBody.player.categoryBitMask | PhysicsBody.collectible.categoryBitMask:

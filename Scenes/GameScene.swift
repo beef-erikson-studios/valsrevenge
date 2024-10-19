@@ -15,6 +15,8 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
+    let mainGameStateMachine = GKStateMachine(states: [PauseState(), PlayingState()])
+    
     private var lastUpdateTime : TimeInterval = 0
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
@@ -33,6 +35,10 @@ class GameScene: SKScene {
     
     /// Sets up map modes, physics, and player for use.
     override func didMove(to view: SKView) {
+        
+        // Set initial state
+        mainGameStateMachine.enter(PauseState.self)
+        
         // Grass tiles
         let grassMapMode = childNode(withName: "Grass Tile Map") as? SKTileMapNode
         grassMapMode?.setupEdgeLoop()
@@ -100,6 +106,8 @@ class GameScene: SKScene {
     
     /// On touch down - handles controls (movement / shooting).
     func touchDown(atPoint pos : CGPoint) {
+        mainGameStateMachine.enter(PlayingState.self)
+        
         let nodeAtPoint = atPoint(pos)
         if let touchedNode = nodeAtPoint as? SKSpriteNode {
             

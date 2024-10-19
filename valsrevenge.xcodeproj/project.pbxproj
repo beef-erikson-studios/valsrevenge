@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C4577DEA2CC3A4980039D6B2 /* MainGameStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4577DE92CC3A4980039D6B2 /* MainGameStates.swift */; };
 		C45A2E252CAB534A00402A76 /* PlayerStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45A2E232CAB534A00402A76 /* PlayerStates.swift */; };
 		C4CABFB62C84CBE200D32717 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CABFB52C84CBE200D32717 /* AppDelegate.swift */; };
 		C4CABFBE2C84CBE200D32717 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CABFBD2C84CBE200D32717 /* GameViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C4577DE92CC3A4980039D6B2 /* MainGameStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainGameStates.swift; sourceTree = "<group>"; };
 		C45A2E232CAB534A00402A76 /* PlayerStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStates.swift; sourceTree = "<group>"; };
 		C4CABFB22C84CBE200D32717 /* valsrevenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = valsrevenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4CABFB52C84CBE200D32717 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				C45A2E232CAB534A00402A76 /* PlayerStates.swift */,
+				C4577DE92CC3A4980039D6B2 /* MainGameStates.swift */,
 			);
 			path = States;
 			sourceTree = "<group>";
@@ -165,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4577DEA2CC3A4980039D6B2 /* MainGameStates.swift in Sources */,
 				C4CABFBE2C84CBE200D32717 /* GameViewController.swift in Sources */,
 				C45A2E252CAB534A00402A76 /* PlayerStates.swift in Sources */,
 				C4CABFB62C84CBE200D32717 /* AppDelegate.swift in Sources */,

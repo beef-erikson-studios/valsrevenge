@@ -10,6 +10,8 @@ import GameplayKit
 
 class GeneratorComponent: GKComponent {
     
+    var isRunning: Bool = false
+    
     // MARK: - INSPECTABLE PROPERTIES
     
     @GKInspectable var monsterType: String = GameObject.defaultGeneratorType
@@ -21,8 +23,39 @@ class GeneratorComponent: GKComponent {
     
     // MARK: - OVERRIDES
     
-    /// Spawns a monster until maxMonster is hit.
+    /// Initializations.
     override func didAddToEntity() {
+    }
+    
+    /// This is needed so things load properly.
+    override class var supportsSecureCoding: Bool {
+        true
+    }
+    
+    /// Spawns monsters if in PlayingState.
+    override func update(deltaTime seconds: TimeInterval) {
+        if let scene = componentNode.scene as? GameScene {
+            switch scene.mainGameStateMachine.currentState {
+            case is PauseState:
+                if isRunning == true {
+                    stopGenerator()
+                }
+            case is PlayingState:
+                if isRunning == false {
+                    startGenerator()
+                }
+            default:
+                break
+            }
+        }
+    }
+    
+    // MARK: - FUNCTIONS
+    
+    /// Starts spawning monsters until maxMonsters is hit.
+    func startGenerator() {
+        isRunning = true
+        
         // Waits and spawns monster
         let wait = SKAction.wait(forDuration: waitTime)
         let spawn = SKAction.run { [unowned self] in self.spawnMonsterEntity() }
@@ -40,13 +73,11 @@ class GeneratorComponent: GKComponent {
         componentNode.run(repeatAction!, withKey: "spawnMonster")
     }
     
-    // This is needed so things load properly.
-    override class var supportsSecureCoding: Bool {
-        true
+    /// Stops spawning monsters.
+    func stopGenerator() {
+        isRunning = false
+        componentNode.removeAction(forKey: "spawnMonster")
     }
-    
-    
-    // MARK: - FUNCTIONS
     
     /// Monster spawner - spawn a monster based on monster type.
     func spawnMonsterEntity() {

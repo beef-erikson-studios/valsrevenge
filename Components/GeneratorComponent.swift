@@ -109,7 +109,7 @@ class GeneratorComponent: GKComponent {
             // Add the physics component
             let physicsComponent = PhysicsComponent()
             physicsComponent.bodyCategory = PhysicsCategory.monster.rawValue
-            componentNode.entity?.addComponent(physicsComponent)
+            monsterEntity.addComponent(physicsComponent)
             
             // Add monster entity to scene entities array so they use update(_:)
             if let scene = componentNode.scene as? GameScene {

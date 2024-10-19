@@ -14,6 +14,7 @@ class GameScene: SKScene {
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
+    let agentComponentSystem = GKComponentSystem(componentClass: GKAgent2D.self)
     
     let mainGameStateMachine = GKStateMachine(states: [PauseState(), PlayingState()])
     
@@ -35,7 +36,6 @@ class GameScene: SKScene {
     
     /// Sets up map modes, physics, and player for use.
     override func didMove(to view: SKView) {
-        
         // Set initial state
         mainGameStateMachine.enter(PauseState.self)
         
@@ -73,6 +73,9 @@ class GameScene: SKScene {
         for entity in self.entities {
             entity.update(deltaTime: dt)
         }
+        
+        // Update component systems
+        agentComponentSystem.update(deltaTime: dt)
         
         self.lastUpdateTime = currentTime
     }

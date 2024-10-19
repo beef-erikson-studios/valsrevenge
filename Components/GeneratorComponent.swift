@@ -91,13 +91,24 @@ class GeneratorComponent: GKComponent {
             monsterNode.position = componentNode.position
             componentNode.parent?.addChild(monsterNode)
             
-            // Move monster to the right 100px
-            monsterNode.run(SKAction.moveBy(x: 100, y: 0, duration: 1.0))
+            // Initial spawn movement, preferance in spawning to the left
+            let randomPositions: [CGFloat] = [-50, -50, 50]
+            let randomX = randomPositions.randomElement() ?? 0
+            monsterNode.run(SKAction.moveBy(x: randomX, y: 0, duration: 1.0))
             
             // Sets and adds healthComponent
             let healthComponent = HealthComponent()
             healthComponent.currentHealth = monsterHealth
             monsterEntity.addComponent(healthComponent)
+            
+            // Add the agent component
+            let agentComponent = AgentComponent()
+            monsterEntity.addComponent(agentComponent)
+            
+            // Add the physics component
+            let physicsComponent = PhysicsComponent()
+            physicsComponent.bodyCategory = PhysicsCategory.monster.rawValue
+            componentNode.entity?.addComponent(physicsComponent)
         }
     }
 }

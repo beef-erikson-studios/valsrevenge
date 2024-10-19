@@ -21,16 +21,43 @@ class HealthComponent : GKComponent {
     private let healthFull = SKTexture(imageNamed: "health_full")
     private let healthEmpty = SKTexture(imageNamed: "health_empty")
     
+    private var hitAction = SKAction()
+    private var dieAction = SKAction()
+    
     
     // MARK: - Health Meter Functions
     
-    /// Adds health meter above the entity.
+    /// Adds health meter above the entity. Also handles hit / death actions.
     override func didAddToEntity() {
         // Place health above head and sets health to 0
         if let healthMeter = SKReferenceNode(fileNamed: "HealthMeter") {
             healthMeter.position = CGPoint(x: 0, y: 100)
             componentNode.addChild(healthMeter)
-            updateHealth(0, forNode: healthMeter)
+            updateHealth(0, forNode: componentNode)
+            
+            // Player hit / death
+            if let _ = componentNode as? Player {
+                hitAction = SKAction.playSoundFileNamed("player_hit", waitForCompletion: false)
+                
+                let playSound = SKAction.playSoundFileNamed("player_die", waitForCompletion: false)
+                dieAction = SKAction.run {
+                    self.componentNode.run(playSound, completion: {
+                        // TODO: Add code to restart the game - for now, reset health.
+                        self.currentHealth = self.maxHealth
+                    })
+                }
+            // Monster hit / death
+            } else {
+                hitAction = SKAction.playSoundFileNamed("monster_hit", waitForCompletion: false)
+                
+                let playSound = SKAction.playSoundFileNamed("monster_die", waitForCompletion: false)
+                
+                dieAction = SKAction.run {
+                    self.componentNode.run(playSound, completion: {
+                        self.componentNode.removeFromParent()
+                    })
+                }
+            }
         }
     }
     
@@ -43,11 +70,24 @@ class HealthComponent : GKComponent {
             currentHealth = maxHealth
         }
         
+        // Run hit or die actions
+        if value < 0 {
+            if currentHealth == 0 {
+                componentNode.run(dieAction)
+            } else {
+                componentNode.run(hitAction)
+            }
+        }
+        
         // Sets health
-        for barNum in 1...maxHealth {
-            (componentNode as? Player) != nil ?
-                setupBar(at: barNum, tint: .cyan) :
+        if let _ = node as? Player {
+            for barNum in 1...maxHealth {
+                setupBar(at: barNum, tint: .cyan)
+            }
+        } else {
+            for barNum in 1...maxHealth {
                 setupBar(at: barNum)
+            }
         }
     }
     

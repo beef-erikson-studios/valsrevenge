@@ -10,13 +10,13 @@ import GameplayKit
 
 class HealthComponent : GKComponent {
     
-    // MARK: - Inspector Variables
+    // MARK: - INSPECTOR PROPERTIES
     
     @GKInspectable var currentHealth: Int = 3
     @GKInspectable var maxHealth: Int = 3
     
     
-    // MARK: - Private Variables
+    // MARK: - PRIVATES
     
     private let healthFull = SKTexture(imageNamed: "health_full")
     private let healthEmpty = SKTexture(imageNamed: "health_empty")
@@ -25,7 +25,7 @@ class HealthComponent : GKComponent {
     private var dieAction = SKAction()
     
     
-    // MARK: - Health Meter Functions
+    // MARK: - HEALTH METER FUNCTIONS
     
     /// Adds health meter above the entity. Also handles hit / death actions.
     override func didAddToEntity() {

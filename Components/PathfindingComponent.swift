@@ -10,7 +10,7 @@ import GameplayKit
 
 class PathfindingComponent: GKComponent {
     
-    // MARK: - VARIABLES
+    // MARK: - PROPERTIES
     
     let agent = GKAgent2D()
     var isRunning = false

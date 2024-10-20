@@ -10,7 +10,7 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-    // MARK: - Properties
+    // MARK: - PROPERTIES
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -27,7 +27,51 @@ class GameScene: SKScene {
     let margin: CGFloat = 20.0
     
     
-    // MARK: - Overrides
+    // MARK: CONTROLLER PROPERTIES
+    
+    lazy var controllerMovement: Controller? = {
+        guard let player = player else { return nil }
+        
+        let stickImage = SKSpriteNode(imageNamed: "player-val-head_0")
+        stickImage.setScale(0.75)
+        
+        let controller = Controller(stickImage: stickImage, attachedNode: player,
+                                    nodeSpeed: 4, isMovement: true,
+                                    range: 55.0,
+                                    color: SKColor(red: 59.0/255, green: 111.0/255.0,
+                                                   blue: 141.0/255.0, alpha: 0.75))
+        controller.setScale(0.65)
+        controller.zPosition += 1
+        
+        controller.anchorLeft()
+        controller.hideLargeArrows()
+        controller.hideSmallArrows()
+        
+        return controller
+    }()
+    
+    lazy var controllerAttack: Controller? = {
+        guard let player = player else { return nil }
+        
+        let stickImage = SKSpriteNode(imageNamed: "controller_attack")
+        
+        let controller = Controller(stickImage: stickImage, attachedNode: player,
+                                    nodeSpeed: 25, isMovement: false,
+                                    range: 55.0,
+                                    color: SKColor(red: 160.0/255.0, green: 65.0/255.0,
+                                                   blue: 65.0/255.0, alpha: 0.75))
+        controller.setScale(0.65)
+        controller.zPosition += 1
+        
+        controller.anchorRight()
+        controller.hideLargeArrows()
+        controller.hideSmallArrows()
+        
+        return controller
+    }()
+    
+    
+    // MARK: - OVERRIDES
     
     /// On scene load, resets lastUpdateTime.
     override func sceneDidLoad() {
@@ -78,19 +122,15 @@ class GameScene: SKScene {
     }
     
 
-    // MARK: - Functions
+    // MARK: - SETUP FUNCTIONS
     
     /// Updates the control widgets to stay in the bottom right / bottom left.
     func updateControllerLocation() {
-        // Set controller to bottom left
-        let controller = childNode(withName: "//controller")
-        controller?.position = CGPoint(x: (viewLeft + margin + insets.left),
-                                       y: (viewBottom + margin + insets.bottom))
+        controllerMovement?.position = CGPoint(x: viewLeft + margin + insets.left,
+                                               y: viewBottom + margin + insets.bottom)
         
-        // Set controller to bottom right
-        let attackButton = childNode(withName: "//attackButton")
-        attackButton?.position = CGPoint(x: (viewRight - margin - insets.right),
-                                         y: (viewBottom + margin + insets.bottom))
+        controllerAttack?.position = CGPoint(x: viewRight - margin - insets.right,
+                                             y: viewBottom + margin + insets.bottom)
     }
     
     /// Sets the camera up and contrains it to the player.
@@ -101,7 +141,7 @@ class GameScene: SKScene {
         camera?.constraints = [playerConstraint]
     }
     
-    /// Sets up the initial move state, player agent, and HUD.
+    /// Sets up the initial move state, player agent, HUD, and controls.
     func setupPlayer() {
         player = childNode(withName: "player") as? Player
     
@@ -110,10 +150,18 @@ class GameScene: SKScene {
             player.move(.stop)
             agentComponentSystem.addComponent(player.agent)
         }
+        
+        if let controllerMovement = controllerMovement {
+            addChild(controllerMovement)
+        }
+        
+        if let controllerAttack = controllerAttack {
+            addChild(controllerAttack)
+        }
     }
 
     
-    // MARK: - Touch Controls
+    // MARK: - TOUCH CONTROLS
     
     /// On touch down - handles controls (movement / shooting).
     func touchDown(atPoint pos : CGPoint) {

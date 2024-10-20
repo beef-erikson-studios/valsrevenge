@@ -131,7 +131,7 @@ class Controller: SKReferenceNode {
     }
     
     /// Stops tracking and resets control.
-    func endtracking() {
+    func endTracking() {
         isTracking = false
         joystick.position = .zero
         moveAttachedNode(direction: .zero)
@@ -144,7 +144,7 @@ class Controller: SKReferenceNode {
         
         // Verify player is using on-screen controls
         if isTracking == true {
-            location = base.convert(pos, to: self.scene!)
+            location = base.convert(pos, from: self.scene!)
         }
         
         // Move the joystick node

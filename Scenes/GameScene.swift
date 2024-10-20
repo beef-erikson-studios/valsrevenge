@@ -29,6 +29,9 @@ class GameScene: SKScene {
     
     // MARK: CONTROLLER PROPERTIES
     
+    private var leftTouch: UITouch?
+    private var rightTouch: UITouch?
+    
     lazy var controllerMovement: Controller? = {
         guard let player = player else { return nil }
         
@@ -36,10 +39,8 @@ class GameScene: SKScene {
         stickImage.setScale(0.75)
         
         let controller = Controller(stickImage: stickImage, attachedNode: player,
-                                    nodeSpeed: 4, isMovement: true,
-                                    range: 55.0,
-                                    color: SKColor(red: 59.0/255, green: 111.0/255.0,
-                                                   blue: 141.0/255.0, alpha: 0.75))
+                                    nodeSpeed: player.movementSpeed, isMovement: true,
+                                    range: 55.0, color: .darkGray)
         controller.setScale(0.65)
         controller.zPosition += 1
         
@@ -56,10 +57,8 @@ class GameScene: SKScene {
         let stickImage = SKSpriteNode(imageNamed: "controller_attack")
         
         let controller = Controller(stickImage: stickImage, attachedNode: player,
-                                    nodeSpeed: 25, isMovement: false,
-                                    range: 55.0,
-                                    color: SKColor(red: 160.0/255.0, green: 65.0/255.0,
-                                                   blue: 65.0/255.0, alpha: 0.75))
+                                    nodeSpeed: player.projectileSpeed, isMovement: false,
+                                    range: 55.0, color: .gray)
         controller.setScale(0.65)
         controller.zPosition += 1
         
@@ -141,13 +140,12 @@ class GameScene: SKScene {
         camera?.constraints = [playerConstraint]
     }
     
-    /// Sets up the initial move state, player agent, HUD, and controls.
+    /// Sets up the player agent and HUD.
     func setupPlayer() {
         player = childNode(withName: "player") as? Player
     
         if let player = player {
             player.setupHUD(scene: self)
-            player.move(.stop)
             agentComponentSystem.addComponent(player.agent)
         }
         
@@ -164,41 +162,57 @@ class GameScene: SKScene {
     // MARK: - TOUCH CONTROLS
     
     /// On touch down - handles controls (movement / shooting).
-    func touchDown(atPoint pos : CGPoint) {
+    func touchDown(atPoint pos : CGPoint, touch: UITouch) {
         mainGameStateMachine.enter(PlayingState.self)
         
         let nodeAtPoint = atPoint(pos)
-        if let touchedNode = nodeAtPoint as? SKSpriteNode {
-            
-            // Movement
-            if touchedNode.name?.starts(with: "controller_") == true {
-                let direction = touchedNode.name?.replacingOccurrences(of: "controller_", with: "")
-                player?.move(Direction(rawValue: direction ?? "stop")!)
-            // Attack
-            } else if touchedNode.name == "button_attack" {
-                player?.attack()
+        
+        if let controllerMovement = controllerMovement {
+            if controllerMovement.contains(nodeAtPoint) {
+                leftTouch = touch
+                controllerMovement.beginTracking()
+            }
+        }
+        
+        if let controllerAttack = controllerAttack {
+            if controllerAttack.contains(nodeAtPoint) {
+                rightTouch = touch
+                controllerAttack.beginTracking()
             }
         }
     }
     
-    /// On touch moved, move the player if on controller, otherwise stop player.
-    func touchMoved(toPoint pos : CGPoint) {
-        let nodeAtPoint = atPoint(pos)
-        if let touchedNode = nodeAtPoint as? SKSpriteNode {
-            if touchedNode.name?.starts(with: "controller_") == true {
-                let direction = touchedNode.name?.replacingOccurrences(of: "controller_", with: "")
-                player?.move(Direction(rawValue: direction ?? "stop")!)
+    /// On touch moved, either attack or move depending on element touched.
+    func touchMoved(toPoint pos : CGPoint, touch: UITouch) {
+        switch touch {
+        case leftTouch:
+            if let controllerMovement = controllerMovement {
+                controllerMovement.moveJoystick(pos: pos)
             }
+        case rightTouch:
+            if let controllerAttack = controllerAttack {
+                controllerAttack.moveJoystick(pos: pos)
+            }
+        default:
+            break
         }
     }
     
-    /// On touch up, stop the player from moving.
-    func touchUp(atPoint pos : CGPoint) {
-        let nodeAtPoint = atPoint(pos)
-        if let touchedNode = nodeAtPoint as? SKSpriteNode {
-            if touchedNode.name?.starts(with: "controller_") == true {
-                player?.stop()
+    /// On touch up, either stop movement or attacking depending on element up.
+    func touchUp(atPoint pos : CGPoint, touch: UITouch) {
+        switch touch {
+        case leftTouch:
+            if let controllerMovement = controllerMovement {
+                controllerMovement.endTracking()
+                leftTouch = touch
             }
+        case rightTouch:
+            if let controllerAttack = controllerAttack {
+                controllerAttack.endTracking()
+                rightTouch = touch
+            }
+        default:
+            break
         }
     }
     
@@ -208,22 +222,22 @@ class GameScene: SKScene {
             label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
         }
         
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        for t in touches { self.touchDown(atPoint: t.location(in: self), touch: t) }
     }
     
     /// Move the touch.
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        for t in touches { self.touchMoved(toPoint: t.location(in: self), touch: t) }
     }
     
     /// End the touch.
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { self.touchUp(atPoint: t.location(in: self), touch: t) }
     }
     
     /// Cancel the touch (end it).
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { self.touchUp(atPoint: t.location(in: self), touch: t) }
     }
     
     

@@ -121,4 +121,55 @@ class Controller: SKReferenceNode {
             node.isHidden = true
         }
     }
+    
+    
+    // MARK: - CONTROLLER METHODS
+    
+    /// Sets isTracking to true.
+    func beginTracking() {
+        isTracking = true
+    }
+    
+    /// Stops tracking and resets control.
+    func endtracking() {
+        isTracking = false
+        joystick.position = .zero
+        moveAttachedNode(direction: .zero)
+    }
+    
+    /// Moves the joystick GUI and calls the appropriate method based on controller type.
+    func moveJoystick(pos: CGPoint) {
+        // Store the location
+        var location = pos
+        
+        // Verify player is using on-screen controls
+        if isTracking == true {
+            location = base.convert(pos, to: self.scene!)
+        }
+        
+        // Move the joystick node
+        let xAxis = CGFloat(location.x.clamped(to: -range...range))     // version 1
+        let yAxis = CGFloat(location.y.clamped(v1: -range, v2: range))  // version 2
+        joystick.position = CGPoint(x: location.x, y: location.y)
+        
+        // Call method based on controller type
+        if isMovement {
+            moveAttachedNode(direction: CGVector(dx: xAxis, dy: yAxis))
+        } else {
+            otherAction(direction: CGVector(dx: xAxis, dy: yAxis))
+        }
+    }
+    
+    /// Moves the attached player node.
+    func moveAttachedNode(direction: CGVector) {
+        attachedNode?.physicsBody?.velocity = CGVector(dx: CGFloat(direction.dx * nodeSpeed),
+                                                       dy: CGFloat(direction.dy * nodeSpeed))
+    }
+    
+    /// Performs attack as long as player exists.
+    func otherAction(direction: CGVector) {
+        guard let player = attachedNode as? Player else { return }
+        
+        player.attack(direction: direction)
+    }
 }

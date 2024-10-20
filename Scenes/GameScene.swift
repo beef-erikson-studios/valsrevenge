@@ -101,16 +101,17 @@ class GameScene: SKScene {
         camera?.constraints = [playerConstraint]
     }
     
-    /// Sets up the initial move state and adds player agent.
+    /// Sets up the initial move state, player agent, and HUD.
     func setupPlayer() {
         player = childNode(withName: "player") as? Player
     
         if let player = player {
+            player.setupHUD(scene: self)
             player.move(.stop)
             agentComponentSystem.addComponent(player.agent)
         }
     }
-    
+
     
     // MARK: - Touch Controls
     
@@ -177,8 +178,18 @@ class GameScene: SKScene {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
-    /// Updates controller location for switching orientations.
+    
+    // MARK: - HUD
+    
+    /// Keeps the HUD pinned to the top left of the screen.
+    func updateHUDLocation() {
+        player?.hud.position = CGPoint(x: viewRight - margin - insets.right,
+                                       y: viewTop - margin - insets.top)
+    }
+    
+    /// Updates controller location and HUD for switching orientations.
     override func didFinishUpdate() {
         updateControllerLocation()
+        updateHUDLocation()
     }
 }

@@ -22,15 +22,23 @@ enum Direction: String {
 
 class Player: SKSpriteNode {
   
+    // MARK: - VARIABLES
+    
     var stateMachine = GKStateMachine(states: [PlayerHasKeyState(),
                                                PlayerHasNoKeyState()])
     var agent = GKAgent2D()
     
     private var currentDirection = Direction.stop
   
+    // Hud elements
+    var hud = SKNode()
+    private let treasureLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+    private let keysLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+    
+    // Inventory elements
     private var keys: Int = 0 {
         didSet {
-            print("Keys: \(keys)")
+            keysLabel.text = "Keys: \(keys)"
             if keys < 1 {
                 stateMachine.enter(PlayerHasNoKeyState.self)
             } else {
@@ -41,10 +49,13 @@ class Player: SKSpriteNode {
   
     private var treasure: Int = 0 {
         didSet {
-            print("Treasure: \(treasure)")
+            treasureLabel.text = "Treasure: \(treasure)"
         }
     }
   
+    
+    // MARK: - INITIALIZATION
+    
     /// Sets initial key state and agent delegate.
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -52,6 +63,39 @@ class Player: SKSpriteNode {
         stateMachine.enter(PlayerHasNoKeyState.self)
         agent.delegate = self
     }
+    
+    
+    // MARK: - HUD
+    
+    /// Sets up the heads up display for showing the treasure amount and key count.
+    ///
+    /// - Parameters:
+    ///   - scene: The currently active game scene.
+    func setupHUD(scene: GameScene) {
+        // Set up the treasure label
+        treasureLabel.text = "Treasure: \(treasure)"
+        treasureLabel.horizontalAlignmentMode = .right
+        treasureLabel.verticalAlignmentMode = .center
+        treasureLabel.position = CGPoint(x: 0, y: -treasureLabel.frame.height)
+        treasureLabel.zPosition += 1
+        
+        // Set up the keys label
+        keysLabel.text = "Keys: \(keys)"
+        keysLabel.horizontalAlignmentMode = .right
+        keysLabel.verticalAlignmentMode = .center
+        keysLabel.position = CGPoint(x: 0, y: treasureLabel.frame.minY - keysLabel.frame.height)
+        keysLabel.zPosition += 1
+        
+        // Add the labels to the HUD
+        hud.addChild(treasureLabel)
+        hud.addChild(keysLabel)
+        
+        // Add the HUD to the scene
+        scene.addChild(hud)
+    }
+    
+    
+    // MARK: - ITEM FUNCTIONS
     
     /// Handles the collection of items and adding to the appropriate values.
     ///
@@ -101,6 +145,9 @@ class Player: SKSpriteNode {
         }
     }
   
+    
+    // MARK: - PLAYER CONTROLS
+    
     /// Moves the player in the specified direction.
     func move(_ direction: Direction) {
         

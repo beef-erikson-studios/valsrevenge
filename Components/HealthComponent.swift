@@ -42,8 +42,8 @@ class HealthComponent : GKComponent {
                 let playSound = SKAction.playSoundFileNamed("player_die", waitForCompletion: false)
                 dieAction = SKAction.run {
                     self.componentNode.run(playSound, completion: {
-                        // TODO: Add code to restart the game - for now, reset health.
-                        self.currentHealth = self.maxHealth
+                        // Loads game over scene
+                        self.componentNode.scene?.loadGameOverScene()
                     })
                 }
             // Monster hit / death

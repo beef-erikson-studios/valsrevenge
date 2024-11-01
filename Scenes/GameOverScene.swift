@@ -11,30 +11,41 @@ import GameplayKit
 
 class GameOverScene: SKScene {
   
-  private var newGameButton: SKSpriteNode!
-  private var loadGameButton: SKSpriteNode!
+    private var newGameButton: SKSpriteNode!
+    private var loadGameButton: SKSpriteNode!
   
-  override func didMove(to view: SKView) {
-    newGameButton = childNode(withName: "newGameButton") as? SKSpriteNode
-    loadGameButton = childNode(withName: "loadGameButton") as? SKSpriteNode
-  }
-  
-  // MARK: - TOUCH HANDLERS
-
-  /* ############################################################ */
-  /*                 TOUCH HANDLERS STARTS HERE                   */
-  /* ############################################################ */
-
-  func touchDown(atPoint pos : CGPoint) {
-    let nodeAtPoint = atPoint(pos)
-    if newGameButton.contains(nodeAtPoint) {
-      startNewGame()
-    } else if loadGameButton.contains(nodeAtPoint) {
-      resumeSavedGame()
+    /// Override to initialize the new game button and load game buttons.
+    override func didMove(to view: SKView) {
+        newGameButton = childNode(withName: "newGameButton") as? SKSpriteNode
+        loadGameButton = childNode(withName: "loadGameButton") as? SKSpriteNode
     }
-  }
   
-  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    for t in touches {self.touchDown(atPoint: t.location(in: self))}
-  }
+    // MARK: - TOUCH HANDLERS
+
+    /* ############################################################ */
+    /*                 TOUCH HANDLERS STARTS HERE                   */
+    /* ############################################################ */
+
+    
+    /// Starts either new game or load game depending on which were touched.
+    ///
+    /// - Parameters:
+    ///   - pos: position of touch to test on.
+    func touchDown(atPoint pos : CGPoint) {
+        let nodeAtPoint = atPoint(pos)
+        if newGameButton.contains(nodeAtPoint) {
+            startNewGame()
+        } else if loadGameButton.contains(nodeAtPoint) {
+            resumeSavedGame()
+        }
+    }
+  
+    /// Loops through touches to trigger events.
+    ///
+    /// - Parameters:
+    ///   - touches: Set of UITouch events.
+    ///   - event: Event to trigger.
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches {self.touchDown(atPoint: t.location(in: self))}
+    }
 }

@@ -34,7 +34,7 @@ class Player: SKSpriteNode {
     private let keysLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     
     // Inventory elements
-    private var keys: Int = 0 {
+    private var keys: Int = GameData.shared.keys {
         didSet {
             keysLabel.text = "Keys: \(keys)"
             if keys < 1 {
@@ -45,14 +45,19 @@ class Player: SKSpriteNode {
         }
     }
   
-    private var treasure: Int = 0 {
+    private var treasure: Int = GameData.shared.treasure {
         didSet {
             treasureLabel.text = "Treasure: \(treasure)"
         }
     }
   
     
-    // MARK: - INITIALIZATION
+    // MARK: - INITIALIZATIONS
+    
+    /// Returns the players current key and treasure counts.
+    func getStats() -> (keys: Int, treasure: Int) {
+        return (self.keys, self.treasure)
+    }
     
     /// Sets initial key state and agent delegate.
     required init?(coder: NSCoder) {

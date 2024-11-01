@@ -10,57 +10,69 @@ import Foundation
 
 class GameData: NSObject, Codable {
   
-  // MARK: - Properties
-  var level: Int = 1
+    // MARK: - Properties
   
-  var keys: Int = 0
-  var treasure: Int = 0
+    var level: Int = 1
   
-  // Set up a shared instance of GameData
-  static let shared: GameData = {
-    let instance = GameData()
+    var keys: Int = 0
+    var treasure: Int = 0
+  
+    // Set up a shared instance of GameData
+    static let shared: GameData = {
+        let instance = GameData()
     
-    return instance
-  }()
+        return instance
+    }()
   
-  // MARK: - Init
-  private override init() {}
+    
+    // MARK: - Init
   
-  // MARK: - Save & Load Locally Stored Game Data
-  func saveDataWithFileName(_ filename: String) {
-    let fullPath = getDocumentsDirectory().appendingPathComponent(filename)
-    do {
-      let data = try PropertyListEncoder().encode(self)
-      let dataFile = try NSKeyedArchiver.archivedData(withRootObject: data,
+    private override init() {}
+  
+    
+    // MARK: - Save & Load Locally Stored Game Data
+    
+    /// Saves data file to the provided string name.
+    ///
+    /// - Parameters:
+    ///   - filename: File name to save the data to.
+    func saveDataWithFileName(_ filename: String) {
+        let fullPath = getDocumentsDirectory().appendingPathComponent(filename)
+        do {
+            let data = try PropertyListEncoder().encode(self)
+            let dataFile = try NSKeyedArchiver.archivedData(withRootObject: data,
                                                       requiringSecureCoding: true)
-      try dataFile.write(to: fullPath)
-    } catch {
-      print("Couldn't write Store Data file.")
+            try dataFile.write(to: fullPath)
+        } catch {
+            print("Couldn't write Store Data file.")
+        }
     }
-  }
   
-  func loadDataWithFileName(_ filename: String) {
-    let fullPath = getDocumentsDirectory().appendingPathComponent(filename)
-    do {
-      let contents = try Data(contentsOf: fullPath)
-      if let data = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(contents) as? Data {
-        let gd = try PropertyListDecoder().decode(GameData.self, from: data)
+    /// Loads level, keys, and tresure from the provided string file name.
+    ///
+    /// - Parameters:
+    ///   - filename: File name to load the data from.
+    func loadDataWithFileName(_ filename: String) {
+        let fullPath = getDocumentsDirectory().appendingPathComponent(filename)
+        do {
+            let contents = try Data(contentsOf: fullPath)
+            if let data = try NSKeyedUnarchiver.unarchivedObject(ofClasses: self.classForCoder.allowedTopLevelClasses, from: (contents)) as? Data {
+                let gameData = try PropertyListDecoder().decode(GameData.self, from: data)
         
-        // Restore data (properties)
-        level = gd.level
+                // Restore data (properties)
+                level = gameData.level
         
-        keys = gd.keys
-        treasure = gd.treasure
-        
-      }
-    } catch {
-      print("Couldn't load Store Data file.")
+                keys = gameData.keys
+                treasure = gameData.treasure
+            }
+        } catch {
+            print("Couldn't load Store Data file.")
+        }
     }
-  }
   
-  // Get the user's documents directory
-  fileprivate func getDocumentsDirectory() -> URL {
-    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-    return paths[0]
-  }
+    /// Get the user's documents directory.
+    fileprivate func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
 }

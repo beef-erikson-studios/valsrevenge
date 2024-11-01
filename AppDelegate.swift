@@ -15,7 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Use the shared instance of the GameData object to load player's game data
+        GameData.shared.loadDataWithFileName("gamedata.json")
+        
         return true
+        
+
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

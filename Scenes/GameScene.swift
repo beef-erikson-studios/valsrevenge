@@ -72,9 +72,11 @@ class GameScene: SKScene {
     
     // MARK: - OVERRIDES
     
-    /// On scene load, resets lastUpdateTime.
+    /// On scene load, resets lastUpdateTime and loads gamedata.json. This saves new levels so player can retry a level on death.
     override func sceneDidLoad() {
         self.lastUpdateTime = 0
+        
+        GameData.shared.saveDataWithFileName("gamedata.json")
     }
     
     /// Sets up map modes, physics, and player for use.

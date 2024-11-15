@@ -158,8 +158,25 @@ class GameScene: SKScene {
         if let controllerAttack = controllerAttack {
             addChild(controllerAttack)
         }
+        
+        // Positional audio - listener on player, position on exit
+        setupMusic()
     }
 
+    /// Sets up positional audio listener to the player node, position on exit.
+    func setupMusic() {
+        let musicNode = SKAudioNode(fileNamed: "music")
+        musicNode.isPositional = false
+        
+        // Music gets louder as player approaches exit
+        if let exit = childNode(withName: "exit") {
+            musicNode.position = exit.position
+            musicNode.isPositional = true
+            listener = player
+        }
+        
+        addChild(musicNode)
+    }
     
     // MARK: - TOUCH CONTROLS
     

@@ -56,7 +56,7 @@ class GameData: NSObject, Codable {
         let fullPath = getDocumentsDirectory().appendingPathComponent(filename)
         do {
             let contents = try Data(contentsOf: fullPath)
-            if let data = try NSKeyedUnarchiver.unarchivedObject(ofClasses: self.classForCoder.allowedTopLevelClasses, from: (contents)) as? Data {
+            if let data = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(contents) as? Data {
                 let gameData = try PropertyListDecoder().decode(GameData.self, from: data)
         
                 // Restore data (properties)
